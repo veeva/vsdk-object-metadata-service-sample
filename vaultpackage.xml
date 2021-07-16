@@ -1,0 +1,12 @@
+<vaultpackage xmlns="https://veevavault.com/">
+    <name>PKG-vsdk-object-metadata-service-sample</name>
+    <source>
+        <vault></vault>
+        <author>Vault Developer Support</author>
+    </source>
+    <summary>The vsdk-object-metadata-service-sample project source code.</summary>
+    <description>This VPK contains the Vault Java SDK source code for the vsdk-object-metadata-service-sample project.</description>
+    <javasdk>
+        <deployment_option>incremental</deployment_option>
+    </javasdk>
+</vaultpackage>
