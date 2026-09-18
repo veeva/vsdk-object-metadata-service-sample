@@ -2,6 +2,8 @@ package com.veeva.vault.custom.udc;
 
 import com.veeva.vault.sdk.api.core.*;
 import com.veeva.vault.sdk.api.data.*;
+import com.veeva.vault.sdk.api.query.Query;
+import com.veeva.vault.sdk.api.query.QueryService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -78,32 +80,31 @@ public class BusinessLogicServiceImpl implements BusinessLogicService {
    }
 
 
-    //  buildObjectQuery checks field types and constructs a VQL query using object name and fields
-    public String buildObjectQuery(List<String> fieldNames, String objectName) {
+    //  buildObjectQuery checks field types and constructs a VQL query using object name and fields.
+    //  The query is built with QueryService.newQueryBuilder() instead of assembling a raw VQL String.
+    public Query buildObjectQuery(List<String> fieldNames, String objectName) {
         LogService logService = ServiceLocator.locate(LogService.class);
+        QueryService queryService = ServiceLocator.locate(QueryService.class);
 
-       List<ObjectField> queryFields = getFields(fieldNames, objectName);
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("SELECT ");
+        List<ObjectField> queryFields = getFields(fieldNames, objectName);
 
-        //  Iterate over fields
-        Iterator<ObjectField> fieldIterator = queryFields.iterator();
-        while (fieldIterator.hasNext()) {
-
-            ObjectField currentChangedField = fieldIterator.next();
-            // If the field type is long text, use the long text method to get the full value
+        //  Build the SELECT field list. Long text fields must be wrapped in the LONGTEXT() function
+        //  to retrieve their full value.
+        List<String> selectFields = VaultCollections.newList();
+        for (ObjectField currentChangedField : queryFields) {
             if (currentChangedField.getFieldType() == ObjectFieldType.LONGTEXT) {
-                queryBuilder.append("LONGTEXT(").append(currentChangedField.getName()).append(")");
+                selectFields.add("LONGTEXT(" + currentChangedField.getName() + ")");
             } else {
-                queryBuilder.append(currentChangedField.getName());
-            }
-            if (fieldIterator.hasNext()) {
-                queryBuilder.append(", ");
+                selectFields.add(currentChangedField.getName());
             }
         }
-        queryBuilder.append(" FROM ").append(objectName);
-        logService.info(queryBuilder.toString());
-        return queryBuilder.toString();
+
+        Query query = queryService.newQueryBuilder()
+                .withSelect(selectFields)
+                .withFrom(objectName)
+                .build();
+        logService.info("Built query on {} selecting {}", objectName, selectFields);
+        return query;
     }
 
 
@@ -117,7 +118,7 @@ public class BusinessLogicServiceImpl implements BusinessLogicService {
 
             for (ObjectField field : changeFields) {
 
-                logService.info("Data Change Field: " + field.getLabel());
+                logService.info("Data Change Field: {}", field.getLabel());
 
                 String fieldName = field.getName();
                 ValueType fieldValueType = field.getValueType();
@@ -125,7 +126,7 @@ public class BusinessLogicServiceImpl implements BusinessLogicService {
                 // If new values are not same as old values, values have changed
                 // Notify user that values have changed
                 if (!compareFields(fieldName, fieldValueType, recordChange)) {
-                    logService.debug("Field Updated: " + field.getLabel());
+                    logService.debug("Field Updated: {}", field.getLabel());
                     hasChanges = true;
                 }
 

@@ -2,11 +2,11 @@
 
 **Please see the [project wiki](https://github.com/veeva/vsdk-object-metadata-service-sample/wiki) for a detailed walkthrough**.
 
-The **vsdk-object-metadata-sample** project covers the use of the SDK Object Metadata Service in a SDK Trigger. The Trigger will accomplish the following:
+The **vsdk-object-metadata-sample** project covers the use of the SDK Object Metadata in a SDK Trigger. The Trigger will accomplish the following:
 
-- Demonstrate how to get field types and value types of an object field
-- Demonstrate how to use field types to get the full value of a long text field using VQL
-
+-   Validate that the product exists and show a translated error in French if it does not.
+-   Validate that the order quantity is less than the quantity in stock and show a translated error in French if it does not.
+- Validate that the product is in stock(quantity is greater than 0) and show a translated error if it does not.
 
 ## How to import
 
@@ -23,8 +23,8 @@ For Eclipse this is done by:
 
 For this project, the custom trigger and necessary vault components are contained in the two separate vault packages (VPK). The VPKs are located in the project's **deploy-vpk** directory  and **need to be deployed to your vault** prior to debugging these use cases:
 
-1.  Clone or download the sample Maven project [vSDK Object Metadata Sample project](https://github.com/veeva/vsdk-object-metadata-sample) from Github.
-2.  Run through the [Getting Started](https://developer.veevavault.com/sdk/#Getting_Started) guide to setup your development environment.
+1.  Clone or download the sample Maven project [vSDK Object Metadata Sample project](https://github.com/veeva/vsdk-object-metadata-service-sample) from Github.
+2.  Run through the [Getting Started](https://general.veevavault.dev/vault-sdk/getting-started/) guide to setup your development environment.
 3.  Log in to your vault and navigate to **Admin > Deployment > Inbound Packages** and click **Import**:
 4.  Locate and select the following file in your downloaded project file:
 

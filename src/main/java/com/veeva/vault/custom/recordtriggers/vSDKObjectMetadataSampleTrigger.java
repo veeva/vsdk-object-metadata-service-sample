@@ -16,6 +16,7 @@ import com.veeva.vault.sdk.api.core.RequestContext;
 import com.veeva.vault.sdk.api.core.ServiceLocator;
 import com.veeva.vault.sdk.api.core.VaultCollections;
 import com.veeva.vault.sdk.api.data.*;
+import com.veeva.vault.sdk.api.query.Query;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class vSDKObjectMetadataSampleTrigger implements RecordTrigger {
         // Get an instance of our business logic service
         BusinessLogicService businessLogicService = ServiceLocator.locate(BusinessLogicService.class);
 
-        String query = businessLogicService.buildObjectQuery(
+        Query query = businessLogicService.buildObjectQuery(
                 VaultCollections.asList("amount__c", "description__c"),
                 OBJECT_NAME);
 
